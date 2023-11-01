@@ -5,8 +5,9 @@ import math
 from math import sqrt
 
 
-# 定义一个三角形的遮罩，用于自注意力机制
 class TriangularCausalMask():
+    """定义一个三角形的遮罩，用于自注意力机制"""
+
     def __init__(self, B, L, device="cpu"):
         mask_shape = [B, 1, L, L]
         with torch.no_grad():
@@ -67,6 +68,7 @@ class AnomalyAttention(nn.Module):
 
         # 将sigma转置，改变其维度顺序，以匹配后续计算
         sigma = sigma.transpose(1, 2)  # B L H ->  B H L
+        window_size = attn.shape[-1]
 
         # 根据sigma计算权重，并对其进行平滑处理
         sigma = torch.sigmoid(sigma * 5) + 1e-5
@@ -91,8 +93,9 @@ class AnomalyAttention(nn.Module):
         else:
             return (V.contiguous(), None)
 
+
 class AttentionLayer(nn.Module):
-    def __init__(self, attention, d_model, n_heads, d_keys=None, d_values=None):
+    def __init__(self, attention, d_model, n_heads, d_keys=None, d_values=None, *args, **kwargs):
         # 初始化AttentionLayer模块
         super(AttentionLayer, self).__init()
 

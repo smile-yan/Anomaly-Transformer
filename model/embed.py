@@ -1,14 +1,12 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.nn.utils import weight_norm
 import math
 
 
-"""
-这个代码定义了一个用于生成位置编码的模块，它将位置信息添加到输入序列中，以帮助模型处理序列中不同位置的信息。
-"""
 class PositionalEmbedding(nn.Module):
+    """
+    这个代码定义了一个用于生成位置编码的模块，它将位置信息添加到输入序列中，以帮助模型处理序列中不同位置的信息。
+    """
     def __init__(self, d_model, max_len=5000):
         super(PositionalEmbedding, self).__init__()
 
@@ -36,11 +34,11 @@ class PositionalEmbedding(nn.Module):
         return self.pe[:, :x.size(1)]
 
 
-"""
-这个代码定义了一个TokenEmbedding模块，用于将输入的词嵌入向量转换为目标维度d_model的表示。
-它使用卷积操作来捕捉局部特征，并将输入的维度进行适当的变换，以满足模型的输入要求。
-"""
 class TokenEmbedding(nn.Module):
+    """
+    这个代码定义了一个TokenEmbedding模块，用于将输入的词嵌入向量转换为目标维度d_model的表示。
+    它使用卷积操作来捕捉局部特征，并将输入的维度进行适当的变换，以满足模型的输入要求。
+    """
     def __init__(self, c_in, d_model):
         super(TokenEmbedding, self).__init__()
 
@@ -63,10 +61,10 @@ class TokenEmbedding(nn.Module):
         return x
 
 
-"""
-这个模块将输入数据进行值嵌入和位置嵌入的处理，最终输出一个包含值嵌入和位置嵌入信息的张量。 Dropout 层有助于降低过拟合风险。
-"""
 class DataEmbedding(nn.Module):
+    """
+    这个模块将输入数据进行值嵌入和位置嵌入的处理，最终输出一个包含值嵌入和位置嵌入信息的张量。 Dropout 层有助于降低过拟合风险。
+    """
     def __init__(self, c_in, d_model, dropout=0.0):
         super(DataEmbedding, self).__init__()
 
@@ -88,4 +86,3 @@ class DataEmbedding(nn.Module):
 
         # 返回处理后的张量，其中包含了值嵌入和位置嵌入的信息
         return x
-

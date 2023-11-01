@@ -5,13 +5,14 @@ import torch.nn.functional as F
 from .attn import AnomalyAttention, AttentionLayer
 from .embed import DataEmbedding, TokenEmbedding
 
-"""
-这个模块定义了编码器层，它包含了自注意力层和卷积层。
-自注意力层用于捕捉输入序列的依赖关系，而卷积层用于进行局部特征的处理。注意力权重、掩码、和sigma值由自注意力层输出，
-然后将其与原始输入相加并应用Layer Normalization来更新输入。
-随后，通过卷积层和激活函数处理输入，再次将其与原始输入相加并应用Layer Normalization来获得最终的输出。 Dropout层用于降低过拟合风险。
-"""
+
 class EncoderLayer(nn.Module):
+    """
+    这个模块定义了编码器层，它包含了自注意力层和卷积层。
+    自注意力层用于捕捉输入序列的依赖关系，而卷积层用于进行局部特征的处理。注意力权重、掩码、和sigma值由自注意力层输出，
+    然后将其与原始输入相加并应用Layer Normalization来更新输入。
+    随后，通过卷积层和激活函数处理输入，再次将其与原始输入相加并应用Layer Normalization来获得最终的输出。 Dropout层用于降低过拟合风险。
+    """
     def __init__(self, attention, d_model, d_ff=None, dropout=0.1, activation="relu"):
         super(EncoderLayer, self).__init__()
 
@@ -56,12 +57,12 @@ class EncoderLayer(nn.Module):
         return self.norm2(x + y), attn, mask, sigma
 
 
-"""
-这个模块定义了一个编码器（Encoder），它由一系列编码器层组成。
-每个编码器层通过自注意力机制对输入数据进行编码，同时记录了注意力系列信息、先验信息和sigma值。
-最终的编码器输出可以经过可选的Layer Normalization层进行标准化。
-"""
 class Encoder(nn.Module):
+    """
+    这个模块定义了一个编码器（Encoder），它由一系列编码器层组成。
+    每个编码器层通过自注意力机制对输入数据进行编码，同时记录了注意力系列信息、先验信息和sigma值。
+    最终的编码器输出可以经过可选的Layer Normalization层进行标准化。
+    """
     def __init__(self, attn_layers, norm_layer=None):
         super(Encoder, self).__init__()
 
@@ -94,11 +95,11 @@ class Encoder(nn.Module):
         return x, series_list, prior_list, sigma_list
 
 
-"""
-这个模块定义了一个AnomalyTransformer模型，它包括了数据嵌入、编码器和输出投影层。
-数据嵌入将输入数据进行值嵌入和位置嵌入，编码器通过多个编码器层处理嵌入数据，最后通过投影层映射到目标维度。模型可以选择是否输出注意力信息。
-"""
 class AnomalyTransformer(nn.Module):
+    """
+    这个模块定义了一个AnomalyTransformer模型，它包括了数据嵌入、编码器和输出投影层。
+    数据嵌入将输入数据进行值嵌入和位置嵌入，编码器通过多个编码器层处理嵌入数据，最后通过投影层映射到目标维度。模型可以选择是否输出注意力信息。
+    """
     def __init__(self, win_size, enc_in, c_out, d_model=512, n_heads=8, e_layers=3, d_ff=512,
                  dropout=0.0, activation='gelu', output_attention=True):
         super(AnomalyTransformer, self).__init__()
